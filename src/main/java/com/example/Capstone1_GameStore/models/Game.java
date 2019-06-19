@@ -1,16 +1,29 @@
 package com.example.Capstone1_GameStore.models;
 
+import javax.validation.constraints.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Objects;
 
-public class Game {
+;
 
+public class Game {
+    @PositiveOrZero(message = "'game_id' must be greater than 0")
     private int game_id;
+    @NotBlank(message = "'title' cannot be empty, missing, or blank")
     private String title;
-    private String esrb_rating;
+    @NotBlank(message = "'esrb_pricing' cannot be empty, missing, or blank")
+    private  String esrb_rating;
+    @NotBlank(message = "'description' cannot be empty, missing, or blank")
     private String description;
+    @NotNull(message = "'price' cannot be empty, missing, or blank")
+    @Positive(message = "'price' MUST be greater than or equal to 0.00")
+    @Digits(integer = 5, fraction = 2, message = "'price' must be an non-string number less than or equal to 99999.99")
     private BigDecimal price;
+    @NotBlank(message = "'studio' cannot be empty, missing, or blank")
     private String studio;
+    @NotNull(message = "'quantity' must be greater than or equal to 0")
+    @Digits(integer = 11, fraction = 0, message = "'quantity' must be an non-string integer")
     private int quantity;
 
     public Game() {
@@ -20,7 +33,7 @@ public class Game {
         this.title = title;
         this.esrb_rating = esrb_rating;
         this.description = description;
-        this.price = price;
+        setPrice(price);
         this.studio = studio;
         this.quantity = quantity;
     }
@@ -62,6 +75,7 @@ public class Game {
     }
 
     public void setPrice(BigDecimal price) {
+        price = price.setScale(2, BigDecimal.ROUND_HALF_UP);
         this.price = price;
     }
 
