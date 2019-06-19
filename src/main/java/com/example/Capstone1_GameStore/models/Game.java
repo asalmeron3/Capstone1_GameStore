@@ -2,28 +2,31 @@ package com.example.Capstone1_GameStore.models;
 
 import javax.validation.constraints.*;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.Objects;
-
-;
 
 public class Game {
     @PositiveOrZero(message = "'game_id' must be greater than 0")
+    @Digits(integer = 11, fraction = 0, message = "'game_id' cannot exceed 1E11 ")
     private int game_id;
     @NotBlank(message = "'title' cannot be empty, missing, or blank")
+    @Size(max = 50, message = "'title' must be less than 50 characters")
     private String title;
-    @NotBlank(message = "'esrb_pricing' cannot be empty, missing, or blank")
+    @NotBlank(message = "'esrb_rating' cannot be empty, missing, or blank")
+    @Size(max = 50, message = "'esrb_rating' must be less than 50 characters")
     private  String esrb_rating;
     @NotBlank(message = "'description' cannot be empty, missing, or blank")
+    @Size(max = 255, message = "'description' must be less than 255 characters")
     private String description;
     @NotNull(message = "'price' cannot be empty, missing, or blank")
     @Positive(message = "'price' MUST be greater than or equal to 0.00")
     @Digits(integer = 5, fraction = 2, message = "'price' must be an non-string number less than or equal to 99999.99")
     private BigDecimal price;
     @NotBlank(message = "'studio' cannot be empty, missing, or blank")
+    @Size(max = 50, message = "'studio' must be less than 50 characters")
     private String studio;
-    @NotNull(message = "'quantity' must be greater than or equal to 0")
-    @Digits(integer = 11, fraction = 0, message = "'quantity' must be an non-string integer")
+    @PositiveOrZero(message = "'quantity' must be greater than or equal to 0")
+    @NotNull(message = "'quantity' cannot be empty, missing, or blank")
+    @Digits(integer = 11, fraction = 0, message = "'quantity' must be an integer less than 1E11")
     private int quantity;
 
     public Game() {
