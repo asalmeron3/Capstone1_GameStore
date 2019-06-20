@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
@@ -68,6 +69,52 @@ public class ControllerExceptionHandler {
         VndErrors.VndError vndError = new VndErrors.VndError(restMethod + ": " + uri, responseMessage);
 
         ResponseEntity<VndErrors.VndError> response = new ResponseEntity<>(vndError, HttpStatus.BAD_REQUEST);
+        return response;
+    }
+
+    @ExceptionHandler(value = {HttpRequestMethodNotSupportedException.class})
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public ResponseEntity<VndErrors.VndError> handleBadRequestPaths(HttpRequestMethodNotSupportedException e,
+                                                                    HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        String restMethod = request.getMethod();
+
+        String responseMessage;
+
+        switch(uri) {
+            case "/videogame":
+                if (restMethod.equalsIgnoreCase("GET")) {
+                    responseMessage = "GET: /videogames , /videogame?title={title}, /videogame?studio={studio}, " +
+                            "/videogame?esrb_rating={esrb_rating}, OR /videogame/{videogame_id}";
+                } else {
+                    responseMessage = restMethod + ": /videogame/{videogame_id}";
+                }
+
+                break;
+            case "/console":
+                if (restMethod.equalsIgnoreCase("GET")) {
+                    responseMessage = "GET: /consoles, /console/{console_id}, OR /console?manufacturer={manufacturer}";
+                } else {
+                    responseMessage = restMethod + ": /console/{console_id}";
+                }
+                break;
+            case "tshirt":
+                if (restMethod.equalsIgnoreCase("GET")) {
+                    responseMessage = "GET: /tshirts, /tshirt/{t_shirt_id}, /tshirt?size={size},OR /tshirt?color={color} ";
+                }  else {
+                    responseMessage = restMethod + ": /tshirt/{t_shirt_id}";
+                }
+                break;
+            default: responseMessage = "default";
+        }
+
+        responseMessage = "Valid paths - " + responseMessage;
+
+        VndErrors.VndError vndError = new VndErrors.VndError(restMethod + ": " + uri + " is not a valid path.",
+                responseMessage);
+
+        ResponseEntity<VndErrors.VndError> response = new ResponseEntity<>(vndError, HttpStatus.METHOD_NOT_ALLOWED);
+
         return response;
     }
 }
