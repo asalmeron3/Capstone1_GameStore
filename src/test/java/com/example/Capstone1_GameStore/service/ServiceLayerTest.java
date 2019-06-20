@@ -1,11 +1,9 @@
 package com.example.Capstone1_GameStore.service;
 
-import com.example.Capstone1_GameStore.dao.ConsoleDao;
-import com.example.Capstone1_GameStore.dao.ConsoleDaoJdbcTemplate;
-import com.example.Capstone1_GameStore.dao.GameDao;
-import com.example.Capstone1_GameStore.dao.GameDaoJdbcTemplate;
+import com.example.Capstone1_GameStore.dao.*;
 import com.example.Capstone1_GameStore.models.Console;
 import com.example.Capstone1_GameStore.models.Game;
+import com.example.Capstone1_GameStore.models.Tshirt;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,14 +22,16 @@ public class ServiceLayerTest {
     ServiceLayer serviceLayerInTest;
     GameDao gameDaoForTest;
     ConsoleDao consoleDaoForTest;
+    TshirtDao tshirtDao;
 
     @Before
     public void setUpServiceLayerInTestAndMockDbs() throws Exception {
 
         setUpGameMock();
         setUpConsoleDao();
+        setUpTshirtDao();
 
-        serviceLayerInTest = new ServiceLayer(gameDaoForTest, consoleDaoForTest);
+        serviceLayerInTest = new ServiceLayer(gameDaoForTest, consoleDaoForTest, tshirtDao);
     }
 
     private void setUpGameMock() {
@@ -276,12 +276,20 @@ public class ServiceLayerTest {
                 64
         );
 
+        Console updatedConsole = new Console(
+                "Xbox One",
+                "Windows",
+                "8 GB",
+                "Intel 1J",
+                new BigDecimal(10.44),
+                64
+        );
+        updatedConsole.setConsole_id(77);
+
         doReturn(successfullyAddedConsole).when(consoleDaoForTest).addConsole(consoleToAdd);
         doReturn(successfullyAddedConsole).when(consoleDaoForTest).getConsoleById(77);
 
-        successfullyAddedConsole.setManufacturer("Windows");
-
-        doReturn(successfullyAddedConsole).when(consoleDaoForTest).updateConsole(successfullyAddedConsole);
+        doReturn(updatedConsole).when(consoleDaoForTest).updateConsole(updatedConsole);
 
         doReturn(true).when(consoleDaoForTest).deleteConsoleById(77);
         doReturn(false).when(consoleDaoForTest).deleteConsoleById(99);
@@ -347,7 +355,6 @@ public class ServiceLayerTest {
                 new BigDecimal(10.44),
                 64
         );
-        actualConsole.setConsole_id(77);
 
         Console consoleToAdd = new Console(
                 "Xbox One",
@@ -359,6 +366,7 @@ public class ServiceLayerTest {
         );
 
         Console consoleAdded = serviceLayerInTest.addConsoleToDb(consoleToAdd);
+        actualConsole.setConsole_id(consoleAdded.getConsole_id());
 
         assertEquals(consoleAdded, actualConsole);
     }
@@ -433,5 +441,190 @@ public class ServiceLayerTest {
         assertEquals(microsoftConsoles1.get(1).getManufacturer().toLowerCase(), "microsoft");
 
         assertEquals(nintendoConsoles.size(), 0);
+    }
+
+    public void setUpTshirtDao() {
+        tshirtDao = mock(TshirtDaoJdbcTemplate.class);
+
+        Tshirt actualTshirt = new Tshirt(
+                "xl",
+                "blue",
+                "Short sleeve v neck with panda on front",
+                new BigDecimal(15.99),
+                28);
+
+        actualTshirt.setT_shirt_id(1128);
+
+        Tshirt tshirtToAdd = new Tshirt(
+                "xl",
+                "blue",
+                "Short sleeve v neck with panda on front",
+                new BigDecimal(15.99),
+                28);
+
+        Tshirt updateTshirt = new Tshirt(
+                "xl",
+                "pink",
+                "Short sleeve v neck with panda on front",
+                new BigDecimal(15.99),
+                30);
+
+        doReturn(actualTshirt).when(tshirtDao).addTshirt(tshirtToAdd);
+
+        doReturn(actualTshirt).when(tshirtDao).getTshirtById(1128);
+
+        doReturn(true).when(tshirtDao).deleteTshirtById(1128);
+        doReturn(false).when(tshirtDao).deleteTshirtById(0);
+
+        doReturn(updateTshirt).when(tshirtDao).updateTshirt(updateTshirt);
+
+
+        Tshirt t1 = new Tshirt(
+                "medium",
+                "blue",
+                "Short sleeve v neck with panda on front",
+                new BigDecimal(15.99),
+                28);
+
+        Tshirt t2 = new Tshirt(
+                "large",
+                "blue",
+                "Short sleeve v neck with panda on front",
+                new BigDecimal(15.99),
+                28);
+
+        Tshirt t3 = new Tshirt(
+                "large",
+                "white",
+                "Short sleeve v neck with panda on front",
+                new BigDecimal(15.99),
+                28);
+
+        List<Tshirt> allTshirts = new ArrayList<>();
+        allTshirts.add(t1);
+        allTshirts.add(t2);
+        allTshirts.add(t3);
+        doReturn(allTshirts).when(tshirtDao).getAllTshirts();
+
+        List<Tshirt> allBlueshirts1 = new ArrayList<>();
+        allBlueshirts1.add(t1);
+        allBlueshirts1.add(t2);
+        doReturn(allBlueshirts1).when(tshirtDao).getTshirtsByColor("blu");
+        doReturn(allBlueshirts1).when(tshirtDao).getTshirtsByColor("BL");
+
+        List<Tshirt> allWhiteTshirts = new ArrayList<>();
+        allWhiteTshirts.add(t3);
+        doReturn(allWhiteTshirts).when(tshirtDao).getTshirtsByColor("WHIT");
+        doReturn(allWhiteTshirts).when(tshirtDao).getTshirtsByColor("whi");
+
+        List<Tshirt> emptyTshirtList = new ArrayList<>();
+        doReturn(emptyTshirtList).when(tshirtDao).getTshirtsByColor("pink");
+        doReturn(emptyTshirtList).when(tshirtDao).getTshirtsByColor("red");
+
+        List<Tshirt> allMediumTshirts = new ArrayList<>();
+        allMediumTshirts.add(t1);
+        doReturn(allMediumTshirts).when(tshirtDao).getTshirtsBysize("m");
+        doReturn(allMediumTshirts).when(tshirtDao).getTshirtsBysize("Med");
+
+        List<Tshirt> allLargeTshirts = new ArrayList<>();
+        allLargeTshirts.add(t3);
+        allLargeTshirts.add(t2);
+        doReturn(allLargeTshirts).when(tshirtDao).getTshirtsBysize("lar");
+        doReturn(allLargeTshirts).when(tshirtDao).getTshirtsBysize("LARg");
+
+        doReturn(emptyTshirtList).when(tshirtDao).getTshirtsBysize("sm");
+
+    }
+
+    @Test
+    public void addTshirt() {
+        Tshirt actualTshirt = new Tshirt(
+                "xl",
+                "blue",
+                "Short sleeve v neck with panda on front",
+                new BigDecimal(15.99),
+                28);
+
+        Tshirt addedTshirt = serviceLayerInTest.addTshirtToDb(actualTshirt);
+
+        actualTshirt.setT_shirt_id(1128);
+
+        assertEquals(addedTshirt, actualTshirt);
+    }
+
+    @Test
+    public void getTshirtById() {
+        Tshirt actualTshirt = new Tshirt(
+                "xl",
+                "blue",
+                "Short sleeve v neck with panda on front",
+                new BigDecimal(15.99),
+                28);
+        actualTshirt.setT_shirt_id(1128);
+
+        Tshirt tshirtFound = serviceLayerInTest.getTshirtFromDbById(1128);
+
+        assertEquals(tshirtFound, actualTshirt);
+    }
+
+    @Test
+    public void updateTshirt() {
+        Tshirt actualTshirt = new Tshirt(
+                "xl",
+                "blue",
+                "Short sleeve v neck with panda on front",
+                new BigDecimal(15.99),
+                28);
+        actualTshirt.setT_shirt_id(1128);
+        actualTshirt.setColor("pink");
+        actualTshirt.setQuantity(30);
+
+        Tshirt updatedTshirt = serviceLayerInTest.updateTshirtInDb(actualTshirt);
+    }
+
+    @Test
+    public void deleteTshirt() {
+        assertTrue(serviceLayerInTest.deleteTshirtInDb(1128));
+        assertFalse(serviceLayerInTest.deleteTshirtInDb(0));
+    }
+
+    @Test
+    public void getAllTshirts() {
+        List<Tshirt> allTs = serviceLayerInTest.getAllTshirts();
+        assertEquals(allTs.size(), 3);
+    }
+
+    @Test
+    public void getAllTshirtsByColor() {
+        List<Tshirt> allBlueTs1 = serviceLayerInTest.getAllTshirtsByColor("blu");
+        List<Tshirt> allBlueTs2 = serviceLayerInTest.getAllTshirtsByColor("BL");
+        assertEquals(allBlueTs1.size(), 2);
+        assertEquals(allBlueTs2.size(), 2);
+
+        List<Tshirt> allWhiteTs1 = serviceLayerInTest.getAllTshirtsByColor("WHIT");
+        List<Tshirt> allWhiteTs2 = serviceLayerInTest.getAllTshirtsByColor("whi");
+        assertEquals(allWhiteTs1.size(), 1);
+        assertEquals(allWhiteTs2.size(), 1);
+
+        List<Tshirt> allNoPinkTs = serviceLayerInTest.getAllTshirtsByColor("pink");
+        assertEquals(allNoPinkTs.size(), 0);
+        List<Tshirt> allNoRedTs = serviceLayerInTest.getAllTshirtsByColor("red");
+        assertEquals(allNoRedTs.size(), 0);
+    }
+
+    @Test
+    public void getAllTshirtsBySize() {
+        List<Tshirt> allMediumTshirts1 = serviceLayerInTest.getAllTshirtsBySize("m");
+        List<Tshirt> allMediumTshirts2 = serviceLayerInTest.getAllTshirtsBySize("Med");
+        assertEquals(allMediumTshirts1.size(), 1);
+        assertEquals(allMediumTshirts2.size(), 1);
+
+        List<Tshirt> allLargeTshirts1 = serviceLayerInTest.getAllTshirtsBySize("lar");
+        List<Tshirt> allLargeTshirts2 = serviceLayerInTest.getAllTshirtsBySize("LARg");
+        assertEquals(allLargeTshirts1.size(), 2);
+        assertEquals(allLargeTshirts2.size(), 2);
+
+        List<Tshirt> allSmallTs = serviceLayerInTest.getAllTshirtsBySize("sm");
+        assertEquals(allSmallTs.size(), 0);
     }
 }

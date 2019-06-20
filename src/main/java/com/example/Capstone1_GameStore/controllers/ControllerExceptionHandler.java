@@ -59,6 +59,7 @@ public class ControllerExceptionHandler {
         switch (uri) {
             case "/videogame" :
             case "/console":
+            case "/tshirt":
                 responseMessage = "'quantity' and 'price' cannot have the datatype of string; must be numbers";
             break;
 

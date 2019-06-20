@@ -2,8 +2,10 @@ package com.example.Capstone1_GameStore.service;
 
 import com.example.Capstone1_GameStore.dao.ConsoleDao;
 import com.example.Capstone1_GameStore.dao.GameDao;
+import com.example.Capstone1_GameStore.dao.TshirtDao;
 import com.example.Capstone1_GameStore.models.Console;
 import com.example.Capstone1_GameStore.models.Game;
+import com.example.Capstone1_GameStore.models.Tshirt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -14,11 +16,14 @@ public class ServiceLayer {
 
     private GameDao serviceLayerGameDao;
     private ConsoleDao serviceLayerConsoleDao;
+    private TshirtDao serviceLayerTshirtDao;
+
     @Autowired
-    public ServiceLayer(GameDao gameDao, ConsoleDao consoleDao) {
+    public ServiceLayer(GameDao gameDao, ConsoleDao consoleDao, TshirtDao tshirtDao) {
 
         serviceLayerGameDao = gameDao;
         serviceLayerConsoleDao = consoleDao;
+        serviceLayerTshirtDao = tshirtDao;
     }
 
     // Game API
@@ -82,4 +87,31 @@ public class ServiceLayer {
 
 
     // T-Shirt API
+    public Tshirt addTshirtToDb(Tshirt tshirt) {
+        return serviceLayerTshirtDao.addTshirt(tshirt);
+    }
+
+    public Tshirt getTshirtFromDbById(int id) {
+        return serviceLayerTshirtDao.getTshirtById(id);
+    }
+
+    public Tshirt updateTshirtInDb(Tshirt tshirt) {
+        return serviceLayerTshirtDao.updateTshirt(tshirt);
+    }
+
+    public boolean deleteTshirtInDb(int id) {
+        return serviceLayerTshirtDao.deleteTshirtById(id);
+    }
+
+    public List<Tshirt> getAllTshirts() {
+        return serviceLayerTshirtDao.getAllTshirts();
+    }
+
+    public List<Tshirt> getAllTshirtsByColor(String color) {
+        return serviceLayerTshirtDao.getTshirtsByColor(color);
+    }
+
+    public List<Tshirt> getAllTshirtsBySize(String size) {
+        return serviceLayerTshirtDao.getTshirtsBysize(size);
+    }
 }
