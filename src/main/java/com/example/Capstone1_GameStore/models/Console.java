@@ -6,7 +6,7 @@ import java.util.Objects;
 
 public class Console {
 
-    @Positive(message = "'console_id' MUST be a positive integer")
+    @PositiveOrZero(message = "'console_id' MUST be a positive integer")
     @Digits(integer = 11, fraction = 0, message = "'console_id must be a value under 1E11")
     private int console_id;
     @NotBlank(message = "'model' cannot be empty, missing, or blank")
@@ -38,7 +38,7 @@ public class Console {
         this.manufacturer = manufacturer;
         this.memory_amount = memory_amount;
         this.processor = processor;
-        this.price = price;
+        setPrice(price);
         this.quantity = quantity;
     }
 
@@ -87,6 +87,7 @@ public class Console {
     }
 
     public void setPrice(BigDecimal price) {
+        price = price.setScale(2, BigDecimal.ROUND_HALF_UP);
         this.price = price;
     }
 

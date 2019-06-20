@@ -1,0 +1,490 @@
+openapi: 3.0.0
+info: 
+  title: Capstone 1 - Online Video Game Store
+  description: This API is for an online video game store. The API should be able to perform CRUD operations with video games, consoles, and t-shirts. Additionally, it should be able to search games by ESRB rating, title, & studio; consoles by manufacturer; and t-shirst by color & size.
+  version: 0.1.1
+  
+servers:
+  - url: http://localhost:8080
+    description: This project is entended to run on your local machine and will not be deployed
+
+paths:
+  /videogames:
+    get:
+      summary: The default returns a list of all the video games in the store's database. Given query parameters, the list can be specific to title, ESRB rating, or console.
+      parameters: 
+        - in: query
+          name: title
+          required: false
+          description: The title of a specific game to search the database for
+          schema:
+            type: string
+        - in: query
+          name: esrb_rating
+          required: false
+          description: The specific esrb rating to filter the list by
+          schema:
+            type: string
+            format: int64
+        - in: query
+          name: studio
+          required: false
+          description: The specific studio to filter the list by
+          schema:
+            type: string
+            format: int64
+      description: A simple service that returns a list of all the video games
+      responses: 
+        '200':
+          description: Successfully found all video games
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/videogame'
+        '400':
+          description: Incorrect api endpoint. To get all video games, go to /videogames
+      tags:
+        - Video Games
+  /videogame:
+    post:
+      summary: Returns a video game with the generated database id
+      description: A simple service that returns the videogame stored in the database with the generated game_id.
+      requestBody:
+        required: true
+        description: A JSON of the video game with all the properties; id is NOT needed as it will be assigned when the request is successful
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/videogame_body'
+      responses: 
+        '201':
+          description: Successfully created video game
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/videogame'
+        '422':
+          description: Request could not be processed; missing request body properties
+      tags:
+        - Video Games
+  /videogame/{id}:
+    get:
+      summary: Returns a video games of the given id store's database
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: The id of the video game that needs to be retrieved
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service that returns a single video game with the given id in the path
+      responses: 
+        '200':
+          description: Successfully found the video game
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/videogame'
+      tags:
+        - Video Games
+    put:
+      summary: Returns a success message 
+      description: A simple service that updates a video game
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          description: The id of the video game that needs to be updated
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        description: A JSON with ALL the properties and id of the video game that needs to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/videogame_body'
+      responses: 
+        '200':
+          description: Successfully updated the video game with id equal to {id}
+        '400':
+          description: Path is incorrect. Use PUT /path/{id}
+        '422':
+          description: Video game could not be updated. Request body is missing parameters.
+      tags:
+        - Video Games
+    delete:
+      summary: Deletes a video game, with the specified game_id, store's databse
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: The id of the video game that needs to be deleted
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service deletes a video game
+      responses: 
+        '200':
+          description: Successfully deleted the video game with the game_id of {id}
+        '400':
+          description: Video game could not be deleted. Use DELETE/videogame/{id} 
+      tags:
+        - Video Games
+  /consoles:
+    get:
+      summary: The default returns a list of all the consoles in the store's database. Given query parameters, the list can be specific to a manufacturer.
+      parameters: 
+        - in: query
+          name: manufacturer
+          required: false
+          description: The console manufacturer name to limit the search results by
+          schema:
+            type: string
+      description: A simple service that returns a list of list of consoles in the store inventory
+      responses: 
+        '200':
+          description: Successfully found all consoles
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/console'
+        '400':
+          description: Incorrect api endpoint. To get all consoles, go to GET /consoles
+      tags:
+        - Console
+  /console:
+    post:
+      summary: Returns a console with the generated database id
+      description: A simple service that returns the console stored in the database with the generated console_id.
+      requestBody:
+        required: true
+        description: A JSON of the console with all the properties; id is NOT needed as it will be assigned when the request is successful
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/console_body'
+      responses: 
+        '201':
+          description: Successfully created console
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/console'
+        '422':
+          description: Request could not be processed; missing request body properties
+      tags:
+        - Console
+  /console/{id}:
+    get:
+      summary: Returns a console of the given id store's database
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: The id of the console that needs to be retrieved
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service that returns a single console with the given id in the path
+      responses: 
+        '200':
+          description: Successfully found the console
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/console'
+      tags:
+        - Console
+    put:
+      summary: Returns the updated console
+      description: A simple service that updates a console
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          description: The id of the console that needs to be updated
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        description: A JSON with ALL the properties and id of the console that needs to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/console_body'
+      responses: 
+        '200':
+          description: Successfully updated the console with id equal to {id}
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/console'
+        '400':
+          description: Path is incorrect. Use PUT /path/{id}
+        '422':
+          description: Console could not be updated. Request body is missing parameters.
+      tags:
+        - Console
+    delete:
+      summary: Deletes a console, with the specified console_id, store's databse
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: The id of the console that needs to be deleted
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service deletes a console
+      responses: 
+        '200':
+          description: Successfully deleted the console with the console_id of {id}
+        '400':
+          description: Console could not be deleted. Use DELETE/console/{id} 
+      tags:
+        - Console
+  /tshirts:
+    get:
+      summary: The default returns a list of all the tshirts in the store's database. Given query parameters, the list can be specific to a color or size.
+      parameters: 
+        - in: query
+          name: color
+          required: false
+          description: The tshirt color to limit the search results by
+          schema:
+            type: string
+        - in: query
+          name: size
+          required: false
+          description: The tshirt size to limit the search results by
+          schema:
+            type: string
+      description: A simple service that returns a list of tshirts in the store inventory
+      responses: 
+        '200':
+          description: Successfully found all tshirts
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/tshirt'
+        '400':
+          description: Incorrect api endpoint. To get all tshirts, go to GET /tshirts
+      tags:
+        - Tshirt
+  /tshirt:
+    post:
+      summary: Returns a tshirt with the generated database id
+      description: A simple service that returns the tshirt stored in the database with the generated tshirt_id.
+      requestBody:
+        required: true
+        description: A JSON of the tshirt with all the properties; id is NOT needed as it will be assigned when the request is successful
+        content:
+          application/json:
+            schema: 
+              $ref: '#/components/schemas/tshirt_body'
+      responses: 
+        '201':
+          description: Successfully created tshirt
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/tshirt'
+        '422':
+          description: Request could not be processed; missing request body properties
+      tags:
+        - Tshirt
+  /tshirt/{id}:
+    get:
+      summary: Returns a tshirt of the given id from the store's database
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: The id of the tshirt that needs to be retrieved
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service that returns a tshirt with the given id in the path
+      responses: 
+        '200':
+          description: Successfully found the tshirt
+          content:
+            application/json:
+              schema: 
+                $ref: '#/components/schemas/tshirt'
+      tags:
+        - Tshirt
+    put:
+      summary: Returns a success message 
+      description: A simple service that updates a tshirt
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          description: The id of the tshirt that needs to be updated
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      requestBody:
+        description: A JSON with ALL the properties and id of the tshirt that needs to be updated
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/tshirt_body'
+      responses: 
+        '200':
+          description: Successfully updated the tshirt with id equal to {id}
+        '400':
+          description: Path is incorrect. Use PUT /tshirt/{id}
+        '422':
+          description: Tshirt could not be updated. Request body is missing parameters.
+      tags:
+        - Tshirt
+    delete:
+      summary: Deletes a tshirt, with the specified t_shirt_id, from the store's databse
+      parameters: 
+        - name: id
+          in: path
+          required: true
+          description: The id of the tshirt that needs to be deleted
+          schema:
+            type: integer
+            format: int64
+            minimum: 1
+      description: A simple service deletes a tshirt
+      responses: 
+        '200':
+          description: Successfully deleted the tshirt with the tshirt_id of {id}
+        '400':
+          description: Tshirt could not be deleted. Use DELETE/tshirt/{id} 
+      tags:
+        - Tshirt
+components:
+  schemas:
+    videogame:
+      type: object
+      properties:
+        game_id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        esrb_rating:
+          type: string
+        price:
+          type: number
+        studio:
+          type: string
+        quantity:
+          type: integer
+    videogame_body:
+      type: object
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        esrb_rating:
+          type: string
+        price:
+          type: number
+        studio:
+          type: string
+        quantity:
+          type: integer
+      required:
+        - title
+        - description
+        - esrb_rating
+        - price
+        - studio
+        - quantity
+    console:
+      type: object
+      properties:
+        console_id:
+          type: number
+        model:
+          type: string
+        manufacturer:
+          type: string
+        memory_amount:
+          type: string
+        processor:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: number
+    console_body:
+      type: object
+      properties:
+        model:
+          type: string
+        manufacturer:
+          type: string
+        memory_amount:
+          type: string
+        processor:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: number
+      required:
+        - console_id
+        - model
+        - manufacturer
+        - memory_amount
+        - processor
+        - price
+        - quantity
+    tshirt:
+      type: object
+      properties:
+        t_shirt_id:
+          type: number
+        size:
+          type: string
+        color:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: number
+    tshirt_body:
+      type: object
+      properties:
+        size:
+          type: string
+        color:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        quantity:
+          type: number
+      required:
+        - t_shirt_id
+        - size
+        - color
+        - description
+        - price
+        - quantity
