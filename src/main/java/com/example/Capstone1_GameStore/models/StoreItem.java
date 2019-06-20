@@ -4,7 +4,7 @@ import javax.validation.constraints.*;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class StoreItem {
+public abstract class StoreItem {
 
     @NotNull(message = "'price' cannot be empty, missing, or blank")
     @Positive(message = "'price' MUST be greater than or equal to 0.00")

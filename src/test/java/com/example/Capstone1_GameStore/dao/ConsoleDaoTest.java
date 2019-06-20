@@ -81,24 +81,6 @@ public class ConsoleDaoTest {
 
         assertTrue(consoleDao.deleteConsoleById(id));
         assertFalse(consoleDao.deleteConsoleById(0));
-
-//        System.out.println("-------------------  Actual Data ----------------- ");
-//        System.out.println(actualConsole.getConsole_id());
-//        System.out.println(actualConsole.getModel());
-//        System.out.println(actualConsole.getManufacturer());
-//        System.out.println(actualConsole.getMemory_amount());
-//        System.out.println(actualConsole.getProcessor());
-//        System.out.println(actualConsole.getPrice());
-//        System.out.println(actualConsole.getQuantity());
-//
-//        System.out.println("\n\n-------------------  Found Data ----------------- ");
-//        System.out.println(consoleFound.getConsole_id());
-//        System.out.println(consoleFound.getModel());
-//        System.out.println(consoleFound.getManufacturer());
-//        System.out.println(consoleFound.getMemory_amount());
-//        System.out.println(consoleFound.getProcessor());
-//        System.out.println(consoleFound.getPrice());
-//        System.out.println(consoleFound.getQuantity());
     }
 
     @Test
