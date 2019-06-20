@@ -10,9 +10,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,13 +43,6 @@ public class ControllerExceptionHandler {
         ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(vndErrors, HttpStatus.UNPROCESSABLE_ENTITY);
 
         return responseEntity;
-//        // Returns a List of the messages only
-//        List<String> validationMessageList = new ArrayList<>();
-//
-//        vndErrorList.stream()
-//                .forEach(error -> validationMessageList.add(error.getMessage()));
-//
-//        return validationMessageList;
     }
     @ExceptionHandler(value = {HttpMessageNotReadableException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -67,8 +58,10 @@ public class ControllerExceptionHandler {
 
         switch (uri) {
             case "/videogame" :
+            case "/console":
                 responseMessage = "'quantity' and 'price' cannot have the datatype of string; must be numbers";
             break;
+
         }
 
         VndErrors.VndError vndError = new VndErrors.VndError(restMethod + ": " + uri, responseMessage);

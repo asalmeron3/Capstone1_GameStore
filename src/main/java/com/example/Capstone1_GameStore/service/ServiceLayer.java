@@ -1,6 +1,8 @@
 package com.example.Capstone1_GameStore.service;
 
+import com.example.Capstone1_GameStore.dao.ConsoleDao;
 import com.example.Capstone1_GameStore.dao.GameDao;
+import com.example.Capstone1_GameStore.models.Console;
 import com.example.Capstone1_GameStore.models.Game;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -11,10 +13,12 @@ import java.util.List;
 public class ServiceLayer {
 
     private GameDao serviceLayerGameDao;
-
+    private ConsoleDao serviceLayerConsoleDao;
     @Autowired
-    public ServiceLayer(GameDao gameDao) {
+    public ServiceLayer(GameDao gameDao, ConsoleDao consoleDao) {
+
         serviceLayerGameDao = gameDao;
+        serviceLayerConsoleDao = consoleDao;
     }
 
     // Game API
@@ -52,7 +56,29 @@ public class ServiceLayer {
 
 
     // Console API
+    public Console addConsoleToDb(Console console) {
+        return serviceLayerConsoleDao.addConsole(console);
+    }
 
+    public Console getConsoleById(int id) {
+        return serviceLayerConsoleDao.getConsoleById(id);
+    }
+
+    public Console updateConsoleInDb(Console console) {
+        return serviceLayerConsoleDao.updateConsole(console);
+    }
+
+    public boolean deleteConsoleFromDb(int id) {
+        return serviceLayerConsoleDao.deleteConsoleById(id) ? true : false;
+    }
+
+    public List<Console> getAllConsolesFromDb() {
+        return serviceLayerConsoleDao.getAllConsoles();
+    }
+
+    public List<Console> getAllConsolesFromDbByManufacturer(String manufacturer) {
+        return serviceLayerConsoleDao.getAllConsolesByManufacturere(manufacturer);
+    }
 
 
     // T-Shirt API

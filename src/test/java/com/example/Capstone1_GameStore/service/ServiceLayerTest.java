@@ -1,7 +1,10 @@
 package com.example.Capstone1_GameStore.service;
 
+import com.example.Capstone1_GameStore.dao.ConsoleDao;
+import com.example.Capstone1_GameStore.dao.ConsoleDaoJdbcTemplate;
 import com.example.Capstone1_GameStore.dao.GameDao;
 import com.example.Capstone1_GameStore.dao.GameDaoJdbcTemplate;
+import com.example.Capstone1_GameStore.models.Console;
 import com.example.Capstone1_GameStore.models.Game;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,13 +23,15 @@ public class ServiceLayerTest {
 
     ServiceLayer serviceLayerInTest;
     GameDao gameDaoForTest;
+    ConsoleDao consoleDaoForTest;
 
     @Before
     public void setUpServiceLayerInTestAndMockDbs() throws Exception {
 
         setUpGameMock();
+        setUpConsoleDao();
 
-        serviceLayerInTest = new ServiceLayer(gameDaoForTest);
+        serviceLayerInTest = new ServiceLayer(gameDaoForTest, consoleDaoForTest);
     }
 
     private void setUpGameMock() {
@@ -248,24 +253,185 @@ public class ServiceLayerTest {
         assertEquals(allGamesWithTitle2.size(), 3);
     }
 
-//
-//        System.out.println("-------------------   Actual Data we Want ----------------- ");
-//        System.out.println(actualGameFromServiceLayer.getGame_id());
-//        System.out.println(actualGameFromServiceLayer.getTitle());
-//        System.out.println(actualGameFromServiceLayer.getDescription());
-//        System.out.println(actualGameFromServiceLayer.getStudio());
-//        System.out.println(actualGameFromServiceLayer.getEsrb_rating());
-//        System.out.println(actualGameFromServiceLayer.getPrice());
-//        System.out.println(actualGameFromServiceLayer.getQuantity());
-//
-//        System.out.println("\n\n-------------------  Data Mock sent back ----------------- ");
-//        System.out.println(gameFromServiceLayer.getGame_id());
-//        System.out.println(gameFromServiceLayer.getTitle());
-//        System.out.println(gameFromServiceLayer.getDescription());
-//        System.out.println(gameFromServiceLayer.getStudio());
-//        System.out.println(gameFromServiceLayer.getEsrb_rating());
-//        System.out.println(gameFromServiceLayer.getPrice());
-//        System.out.println(gameFromServiceLayer.getQuantity());
+    public void setUpConsoleDao() {
+        consoleDaoForTest = mock(ConsoleDaoJdbcTemplate.class);
+
+        Console successfullyAddedConsole = new Console(
+                "Xbox One",
+                "Microsoft",
+                "8 GB",
+                "Intel 1J",
+                new BigDecimal(10.44),
+                64
+        );
+        successfullyAddedConsole.setConsole_id(77);
 
 
+        Console consoleToAdd = new Console(
+                "Xbox One",
+                "Microsoft",
+                "8 GB",
+                "Intel 1J",
+                new BigDecimal(10.44),
+                64
+        );
+
+        doReturn(successfullyAddedConsole).when(consoleDaoForTest).addConsole(consoleToAdd);
+        doReturn(successfullyAddedConsole).when(consoleDaoForTest).getConsoleById(77);
+
+        successfullyAddedConsole.setManufacturer("Windows");
+
+        doReturn(successfullyAddedConsole).when(consoleDaoForTest).updateConsole(successfullyAddedConsole);
+
+        doReturn(true).when(consoleDaoForTest).deleteConsoleById(77);
+        doReturn(false).when(consoleDaoForTest).deleteConsoleById(99);
+
+
+        Console console1 = new Console(
+                "Playstatoin",
+                "Sony",
+                "8 GB",
+                "Intel 1J",
+                new BigDecimal(50.21),
+                64
+        );
+
+        Console console2 = new Console(
+                "Xbox One",
+                "Microsoft",
+                "8 GB",
+                "Intel 1J",
+                new BigDecimal(212.50),
+                64
+        );
+        Console console3 = new Console(
+                "Xbox",
+                "Microsoft",
+                "8 GB",
+                "Intel 1J",
+                new BigDecimal(69),
+                64
+        );
+
+        List<Console> allConsoles = new ArrayList<>();
+        allConsoles.add(console1);
+        allConsoles.add(console2);
+        allConsoles.add(console3);
+
+        List<Console> microsoftConsoles = new ArrayList<>();
+        microsoftConsoles.add(console2);
+        microsoftConsoles.add(console3);
+
+        List<Console> sonyConsoles = new ArrayList<>();
+        sonyConsoles.add(console1);
+
+        List<Console> blankConsoles = new ArrayList<>();
+
+        doReturn(allConsoles).when(consoleDaoForTest).getAllConsoles();
+
+        doReturn(microsoftConsoles).when(consoleDaoForTest).getAllConsolesByManufacturere("micro");
+        doReturn(microsoftConsoles).when(consoleDaoForTest).getAllConsolesByManufacturere("Mic");
+        doReturn(blankConsoles).when(consoleDaoForTest).getAllConsolesByManufacturere("Nintendo");
+        doReturn(sonyConsoles).when(consoleDaoForTest).getAllConsolesByManufacturere("son");
+        doReturn(sonyConsoles).when(consoleDaoForTest).getAllConsolesByManufacturere("so");
+
+    }
+
+    @Test
+    public void addConsole() {
+        Console actualConsole = new Console(
+                "Xbox One",
+                "Microsoft",
+                "8 GB",
+                "Intel 1J",
+                new BigDecimal(10.44),
+                64
+        );
+        actualConsole.setConsole_id(77);
+
+        Console consoleToAdd = new Console(
+                "Xbox One",
+                "Microsoft",
+                "8 GB",
+                "Intel 1J",
+                new BigDecimal(10.44),
+                64
+        );
+
+        Console consoleAdded = serviceLayerInTest.addConsoleToDb(consoleToAdd);
+
+        assertEquals(consoleAdded, actualConsole);
+    }
+
+    @Test
+    public void getConsoleById() {
+        Console actualConsole = new Console(
+                "Xbox One",
+                "Microsoft",
+                "8 GB",
+                "Intel 1J",
+                new BigDecimal(10.44),
+                64
+        );
+        actualConsole.setConsole_id(77);
+
+        Console consoleFound = serviceLayerInTest.getConsoleById(77);
+
+        assertEquals(consoleFound, actualConsole);
+    }
+
+    @Test
+    public void updateConsole() {
+
+        Console console = new Console(
+                "Xbox One",
+                "Microsoft",
+                "8 GB",
+                "Intel 1J",
+                new BigDecimal(10.44),
+                64
+        );
+        console.setConsole_id(77);
+        console.setManufacturer("Windows");
+
+        Console updatedConsole = serviceLayerInTest.updateConsoleInDb(console);
+        assertEquals(updatedConsole, console);
+    }
+
+    @Test
+    public void deleteConsole() {
+        assertTrue(serviceLayerInTest.deleteConsoleFromDb(77));
+        assertFalse(serviceLayerInTest.deleteConsoleFromDb(99));
+
+    }
+
+    @Test
+    public void getAllConsoles() {
+        List<Console> allConsolesFromDb = serviceLayerInTest.getAllConsolesFromDb();
+        int amountAllConsoles = allConsolesFromDb.size();
+
+        assertEquals(amountAllConsoles, 3);
+    }
+
+    @Test
+    public void getAllConsolesByManufacturer() {
+        List<Console> sonyConsoles1 = serviceLayerInTest.getAllConsolesFromDbByManufacturer("so");
+        List<Console> sonyConsoles2 = serviceLayerInTest.getAllConsolesFromDbByManufacturer("son");
+
+        List<Console> microsoftConsoles1 = serviceLayerInTest.getAllConsolesFromDbByManufacturer("micro");
+        List<Console> microsoftConsoles2 = serviceLayerInTest.getAllConsolesFromDbByManufacturer("Mic");
+
+        List<Console> nintendoConsoles = serviceLayerInTest.getAllConsolesFromDbByManufacturer("Nintendo");
+
+
+        assertEquals(sonyConsoles1.size(), 1);
+        assertEquals(sonyConsoles2.size(), 1);
+        assertEquals(sonyConsoles1.get(0).getManufacturer().toLowerCase(), "sony");
+
+        assertEquals(microsoftConsoles1.size(), 2);
+        assertEquals(microsoftConsoles2.size(), 2);
+        assertEquals(microsoftConsoles1.get(1).getManufacturer().toLowerCase(), "microsoft");
+
+        assertEquals(nintendoConsoles.size(), 0);
+    }
 }
