@@ -37,19 +37,19 @@ public class GameController {
         return service.getAllGamesInDb();
     }
 
-    @RequestMapping(value = "/videogame", method = RequestMethod.POST)
+    @RequestMapping(value = "/videogames", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public Game addAGame(@RequestBody @Valid Game game) throws Exception {
         return service.saveGameToDb(game);
     }
 
-    @RequestMapping(value = "/videogame/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/videogames/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Game addAGame(@PathVariable int id) {
         return service.getGameByIdFromDb(id);
     }
 
-    @RequestMapping(value = "/videogame/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/videogames/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public String deleteAGame(@PathVariable int id) {
 
@@ -62,7 +62,7 @@ public class GameController {
         return "No game with game_id of" + id + " was found. Nothing was deleted";
     }
 
-    @RequestMapping(value = "/videogame/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/videogames/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Game updateGame(@PathVariable int id, @RequestBody @Valid Game game) {
         game.setGame_id(id);

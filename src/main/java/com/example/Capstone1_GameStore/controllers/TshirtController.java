@@ -27,26 +27,26 @@ public class TshirtController {
        return service.getAllTshirts();
     }
 
-    @RequestMapping(value = "/tshirt", method = RequestMethod.POST)
+    @RequestMapping(value = "/tshirts", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
     public Tshirt addATshirt(@RequestBody @Valid Tshirt tshirt) {
         return service.addTshirtToDb(tshirt);
     }
 
-    @RequestMapping(value = "/tshirt/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/tshirts/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Tshirt updateTshirt(@RequestBody @Valid Tshirt tshirt, @PathVariable int id) {
         tshirt.setT_shirt_id(id);
         return service.updateTshirtInDb(tshirt);
     }
 
-    @RequestMapping(value = "/tshirt/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/tshirts/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public boolean deleteTshirt(@PathVariable int id ){
         return service.deleteTshirtInDb(id);
     }
 
-    @RequestMapping(value = "/tshirt/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/tshirts/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Tshirt getTshirtByID(@PathVariable int id ){
         return service.getTshirtFromDbById(id);
