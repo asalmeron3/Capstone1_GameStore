@@ -23,26 +23,26 @@ public class ConsoleController {
         return service.getAllConsolesFromDb();
     }
 
-    @RequestMapping(value = "/console", method = RequestMethod.POST)
+    @RequestMapping(value = "/consoles", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Console addConsole(@RequestBody @Valid Console console) {
         return service.addConsoleToDb(console);
     }
 
-    @RequestMapping(value = "/console/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/consoles/{id}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Console getConsoleById(@PathVariable int id) {
         return service.getConsoleById(id);
     }
 
-    @RequestMapping(value = "/console/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/consoles/{id}", method = RequestMethod.PUT)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Console updateConsole(@PathVariable int id, @RequestBody @Valid Console console) {
         console.setConsole_id(id);
         return service.updateConsoleInDb(console);
     }
 
-    @RequestMapping(value = "/console/{id}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/consoles/{id}", method = RequestMethod.DELETE)
     @ResponseStatus(HttpStatus.ACCEPTED)
     public boolean deleteConsoleById(@PathVariable int id) {
         return service.deleteConsoleFromDb(id);

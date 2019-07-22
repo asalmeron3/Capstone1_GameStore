@@ -1,5 +1,6 @@
 package com.example.Capstone1_GameStore.controllers;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.hateoas.VndErrors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -116,5 +117,14 @@ public class ControllerExceptionHandler {
         ResponseEntity<VndErrors.VndError> response = new ResponseEntity<>(vndError, HttpStatus.METHOD_NOT_ALLOWED);
 
         return response;
+    }
+
+    @ExceptionHandler(value = {EmptyResultDataAccessException.class})
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public ResponseEntity<VndErrors> notFoundException(EmptyResultDataAccessException e, WebRequest request){
+        String message = "No results found";
+        VndErrors error= new VndErrors(request.toString(), message);
+        ResponseEntity<VndErrors> responseEntity = new ResponseEntity<>(error,HttpStatus.NO_CONTENT);
+        return responseEntity;
     }
 }
