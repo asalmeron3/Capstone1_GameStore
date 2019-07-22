@@ -40,7 +40,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity.httpBasic();
 
         httpSecurity.authorizeRequests()
-                .mvcMatchers("/").authenticated()
                 .mvcMatchers(HttpMethod.POST, "/consoles", "/tshirts", "/videogames").hasAuthority("MANAGER")
                 .mvcMatchers(HttpMethod.PUT, "/consoles/{id}", "/tshirts/{id}", "/videogames/{id}").hasAuthority("STAFF")
                 .mvcMatchers(HttpMethod.DELETE, "/consoles/{id}", "/tshirts/{id}", "/videogames/{id}").hasAuthority("ADMIN")

@@ -1,0 +1,10 @@
+applications:
+  - name: Capstone1_GameStore
+    memory: 1024M
+    instances: 1
+    random-route: true
+    path: ./target/Capstone1_GameStore-0.0.1-SNAPSHOT.jar
+    services:
+      - game_store_test
+    env:
+      JAVA_OPTS: -Djava.security.egd=file:///dev/urandom
